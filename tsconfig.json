@@ -1,0 +1,17 @@
+{
+  "module": "esnext",
+  "compilerOptions": {
+    "incremental": true,
+    // "target": "ES2015",
+    // "module": "ES2020",
+    "module": "esnext",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./lib/esm",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}
