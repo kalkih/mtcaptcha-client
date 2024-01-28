@@ -1,6 +1,6 @@
 {
   "name": "mtcaptcha-client",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Reverse engineered mtcaptcha client",
   "author": "Karl Kihlström",
   "license": "MIT",
