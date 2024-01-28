@@ -1,15 +1,22 @@
 export interface Challenge extends MtChallenge {
   /**
-   * The mtCaptcha session id
+   * @description The mtCaptcha session id
    */
   sessionId: string;
   /**
-   * The captcha challenge image in Base64 format
+   * @description The captcha challenge image in Base64 format
    */
   image: string;
 }
 
-export interface ChallengeResponse {
+export type ChallengeResult =
+  | {
+      verifiedToken: string;
+      isVerified: true;
+    }
+  | { isVerified: false };
+
+export interface MtChallengeResponse {
   code: number;
   schema: string;
   result: {
@@ -31,7 +38,7 @@ export interface MtChallenge {
   hasFoldChlg: boolean;
 }
 
-export interface ChallengeImageResponse {
+export interface MtChallengeImageResponse {
   code: number;
   schema: string;
   result: {
@@ -41,17 +48,17 @@ export interface ChallengeImageResponse {
   };
 }
 
-export interface ChallengeSolutionResponse {
+export interface MtChallengeSolutionResponse {
   code: number;
   schema: string;
   result: {
     verifyResult:
-      | ChallengeSolutionResultSuccess
-      | ChallengeSolutionResultFailed;
+      | MtChallengeSolutionResultSuccess
+      | MtChallengeSolutionResultFailed;
   };
 }
 
-export interface ChallengeSolutionResultSuccess {
+export interface MtChallengeSolutionResultSuccess {
   isVerified: true;
   verifiedToken: {
     vt: string;
@@ -59,7 +66,7 @@ export interface ChallengeSolutionResultSuccess {
   };
 }
 
-export interface ChallengeSolutionResultFailed {
+export interface MtChallengeSolutionResultFailed {
   isVerified: false;
   verifiedToken: {
     vtttl: -1;

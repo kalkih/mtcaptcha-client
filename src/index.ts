@@ -1,2 +1,2 @@
 export { MtCaptchaClient } from "./class";
-export { Challenge } from "./interfaces";
+export type { Challenge, ChallengeResult } from "./types";

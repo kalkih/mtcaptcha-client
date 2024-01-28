@@ -11,20 +11,22 @@
   "bugs": {
     "url": "https://github.com/kalkih/mtcaptcha-client/issues"
   },
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "files": [
-    "lib/"
+    "dist/"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "eslint": "^8.23.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "node-fetch": "^2.6.7",
     "typescript": "^4.8.3"
   }
 }

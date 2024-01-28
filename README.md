@@ -6,7 +6,7 @@
 
 ### Install the package
 
-Install the package with npm or yarn
+Install the package with npm, yarn or your favorite package manager
 
 ```sh
 $ npm install --save mtcaptcha-client
@@ -21,14 +21,17 @@ import { MtCaptchaClient } from "mtcaptcha-client";
 
 // setup the captcha client
 const captchaClient = new MtCaptchaClient(
-  "example.com", // Url of the mtcaptcha
-  "mtCaptchaSiteKey" // The siteKey of the mtcaptcha customer (check network tab or inspect site for this)
+  // The domain of the site where the mtcaptcha you want to solve is located
+  "www.example.com",
+  // The site key for the customer/site where the mtcaptcha is located
+  // Can be found in the network tab or in the source of the page (look for "siteKey").
+  "MTPublic-abCDEFGH"
 );
 
 // retrieve a captcha challenge
 const challenge = await captchaClient.createChallenge();
 
-// verify captcha solution
+// verify/solve captcha challenge with provided solution
 const result = await captchaClient.verifyChallenge(challenge, "abc123");
 
 if (result.isVerified) {

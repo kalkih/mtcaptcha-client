@@ -8,9 +8,9 @@ export const generateSessionId = () => {
   });
 };
 
-export const generateHeaders = (siteUrl: string) => ({
+export const generateHeaders = (siteUrl: string, siteKey: string) => ({
   "User-Agent": USER_AGENT,
-  referer: `${siteUrl}/client/iframe.html?v=2021-07-21.20.19.18&sitekey=${siteUrl}&iframeId=mtcaptcha-iframe-1&widgetSize=standard&custom=false&widgetInstance=mtcaptcha&challengeType=standard&theme=highcontrast&lang=sv&action=&autoFadeOuterText=false&host=${encodeURIComponent(
+  referer: `${siteUrl}/client/iframe.html?v=2023-03-27.19.50.50&sitekey=${siteKey}&iframeId=mtcaptcha-iframe-1&widgetSize=standard&custom=false&widgetInstance=mtcaptcha&challengeType=standard&theme=highcontrast&lang=sv&action=&autoFadeOuterText=false&host=${encodeURIComponent(
     "https://" + siteUrl
   )}&hostname=${encodeURIComponent(
     siteUrl

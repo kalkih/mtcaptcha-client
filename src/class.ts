@@ -3,22 +3,34 @@ import { BASE_URL, TSH } from "./const";
 import { getKeesString, getPulse, solveChallenge } from "./crypto";
 import {
   MtChallenge,
-  ChallengeImageResponse,
-  ChallengeResponse,
-  ChallengeSolutionResponse,
+  MtChallengeImageResponse,
+  MtChallengeResponse,
+  MtChallengeSolutionResponse,
   Challenge,
-} from "./interfaces";
+  ChallengeResult,
+} from "./types";
 import { generateHeaders, generateSessionId } from "./utils";
 
 export class MtCaptchaClient {
   private siteUrl: string;
-  private sitekey: string;
+  private siteKey: string;
 
+  /**
+   * Create a new MtCaptchaClient
+   * @param {string} siteUrl - The domain of the site where the mtcaptcha you want to solve is located
+   * @example "www.mtcaptcha.com"
+   * @param {string} siteKey - The site key for the customer/site where the mtcaptcha is located, can be found in the network tab or inspect site & look for "siteKey"
+   * @example "MTPublic-tqNCRE0GS"
+   */
   constructor(siteUrl: string, siteKey: string) {
     this.siteUrl = siteUrl;
-    this.sitekey = siteKey;
+    this.siteKey = siteKey;
   }
 
+  /**
+   * Create a new captcha challenge
+   * @returns {Promise<Challenge>} A captcha challenge
+   */
   public async createChallenge(): Promise<Challenge> {
     const { sessionId, challenge } = await this.getChallenge();
 
@@ -34,21 +46,19 @@ export class MtCaptchaClient {
     };
   }
 
-  /*
-   * Function to try solving a captcha challenge, returns a verifiedToken if successful
+  /**
+   * Try solving a captcha challenge, returns a verifiedToken if successful
    * @param {string} challenge - The captcha challenge to solve
-   * @param {string} code - The suggested code to solve the captcha
+   * @param {string} solution - The suggested solution to the captcha challenge
    */
   public async verifyChallenge(
     challenge: Challenge,
-    code: string
-  ): Promise<
-    { verifiedToken: string; isVerified: true } | { isVerified: false }
-  > {
+    solution: string
+  ): Promise<ChallengeResult> {
     const params = new URLSearchParams({
       ct: challenge.ct,
-      sk: this.sitekey,
-      st: code,
+      sk: this.siteKey,
+      st: solution,
       lf: "0",
       bd: this.siteUrl,
       rt: new Date().getTime().toString(),
@@ -71,17 +81,17 @@ export class MtCaptchaClient {
     });
 
     const solutionResponse = await fetch(
-      `${BASE_URL}api/solvechallenge.json?${params}`,
+      `${BASE_URL}/api/solvechallenge.json?${params}`,
       {
         headers: {
-          ...generateHeaders(this.siteUrl),
+          ...generateHeaders(this.siteUrl, this.siteKey),
           Referer: this.siteUrl,
         },
       }
     );
 
     const { result } =
-      (await solutionResponse.json()) as ChallengeSolutionResponse;
+      (await solutionResponse.json()) as MtChallengeSolutionResponse;
 
     const { isVerified, verifiedToken } = result.verifyResult;
 
@@ -97,7 +107,7 @@ export class MtCaptchaClient {
     const sessionId = generateSessionId();
 
     const params = new URLSearchParams({
-      sk: this.sitekey,
+      sk: this.siteKey,
       bd: this.siteUrl,
       rt: new Date().getTime().toString(),
       tsh: TSH,
@@ -112,11 +122,11 @@ export class MtCaptchaClient {
     const challengeResponse = await fetch(
       `${BASE_URL}/api/getchallenge.json?${params}`,
       {
-        headers: generateHeaders(this.siteUrl),
+        headers: generateHeaders(this.siteUrl, this.siteKey),
       }
     );
 
-    const { result } = (await challengeResponse.json()) as ChallengeResponse;
+    const { result } = (await challengeResponse.json()) as MtChallengeResponse;
 
     return {
       sessionId,
@@ -129,7 +139,7 @@ export class MtCaptchaClient {
     mtChallenge: MtChallenge
   ): Promise<string> {
     const params = new URLSearchParams({
-      sk: this.sitekey,
+      sk: this.siteKey,
       ct: mtChallenge.ct,
       fa: mtChallenge.hasFoldChlg
         ? solveChallenge(
@@ -142,10 +152,10 @@ export class MtCaptchaClient {
     });
 
     const imageResponse = await fetch(
-      `${BASE_URL}api/getimage.json?${params}`,
+      `${BASE_URL}/api/getimage.json?${params}`,
       {
         headers: {
-          ...generateHeaders(this.siteUrl),
+          ...generateHeaders(this.siteUrl, this.siteKey),
           cookie: `mtv1Pulse=${getPulse(
             this.siteUrl
           )}; mtv1ConfSum={v:01|wdsz:std|thm:highcontrast|lan:sv|chlg:std|clan:1|cstyl:1|afv:0|afot:0|}; jsV=2021-07-21.20.19.18`,
@@ -153,7 +163,7 @@ export class MtCaptchaClient {
       }
     );
 
-    const { result } = (await imageResponse.json()) as ChallengeImageResponse;
+    const { result } = (await imageResponse.json()) as MtChallengeImageResponse;
 
     return result.img.image64;
   }
